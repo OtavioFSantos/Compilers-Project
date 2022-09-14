@@ -117,8 +117,10 @@ void Op() : {} {
 // FATOR -> TOKEN_id | TOKEN_id "(" LISTAEXP? ")"
 // | TOKEN_numliteral | "true" | "false"
 void Fator() : {} {
-    <ID> (<ID> <APARENTESES> (Listaexp())? <FPARENTESES>)?
-    | <NUM> | <TRUE> | <FALSE>
+    <ID> FatorLinha() | <NUM> | <TRUE> | <FALSE>
+}
+void FatorLinha() : {} {
+    (<APARENTESES> (Listaexp())? <FPARENTESES>)?
 }
 
 // LISTAEXP -> LISTAEXP "," EXP | EXP
