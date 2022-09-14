@@ -1,0 +1,16 @@
+void main{
+    newVar int n1; newVar int n2; newVar int n3;
+    newVar int i; newVar int count;
+
+    n1 = 0; n2 = 1; count = 10; i = 2;
+
+    System.output(n2); 
+    
+    while((i < count)) {
+        n3 = (n1 + n2);
+        System.output(n3);
+        n1 = n2;    
+        n2 = n3;
+        i = (i + 1);
+    };
+}  
