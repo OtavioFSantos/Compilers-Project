@@ -1,0 +1,10 @@
+void main{
+  newVar int teste123_teste;
+  teste123_teste = 9.4E+2;
+  System.output (teste123_teste);
+
+  x = 10;
+  y = (10 + 20);
+
+  System.output(x);
+}

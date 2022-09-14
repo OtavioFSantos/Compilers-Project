@@ -1,0 +1,152 @@
+PARSER_BEGIN(Karloff)
+    import java.io.*;
+    public class Karloff {
+        public static void main(String args[]) throws ParseException,IOException {
+            Karloff parser = new Karloff(new FileInputStream(args[0]));
+            parser.Karloff();
+        }
+    }
+
+PARSER_END(Karloff)
+
+SKIP : {
+    " "
+    | "\t"
+    | "\n"
+    | "\r"
+}
+
+TOKEN : {
+    <MAIN: "main">
+    | <ACHAVES: "{">
+    | <FUNC: "func">
+    | <VOID: "void">
+    | <NEWVAR: "newVar">
+    | <INT: "int">
+    | <PONTOVIRGULA: ";">
+    | <VIRGULA: ",">
+    | <ATRIB: "=">
+    | <IF: "if">
+    | <THEN: "then">
+    | <LESS: "<">
+    | <HIGHER: ">">
+    | <PLUS: "+">
+    | <MINUS: "-">
+    | <REPEAT: "repeat">
+    | <UNTIL: "until">
+    | <RETURN: "return">
+    | <WHILE: "while">
+    | <BOOL: "bool">
+    | <TRUE: "true">
+    | <FALSE: "false">
+    | <MULT: "*">
+    | <DIV: "/">
+    | <AND: "&">
+    | <OR: "|">
+    | <EQUAL: "==">
+    | <APARENTESES: "(">
+    | <FPARENTESES: ")">
+    | <FCHAVES: "}">
+    | <SYSTEMOUT: "System.output">
+}
+
+TOKEN :
+{
+    <NUM : (["0"-"9"])+ ((["."]) (["0"-"9"])*)? (["E"] (["+", "-"])? (["0"-"9"])+)?>
+    | <ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* (["_"] (["a"-"z","A"-"Z","0"-"9"])+)*>
+}
+
+
+// KARLOFF -> MAIN FUNC?
+void Karloff() : {} {
+    Main() (Func())?
+    <EOF> 
+}
+
+// MAIN -> "void" "main" "{" VARDECL SEQCOMANDOS "}"
+void Main() : {} {
+    <VOID> <MAIN> <ACHAVES> Vardecl() Seqcomandos() <FCHAVES>
+}
+
+// VARDECL -> VARDECL "newVar" TIPO TOKEN_id ";" | vazio
+// VARDECL -> "newVar" TIPO TOKEN_id ";" VARDECL | vazio
+void Vardecl() : {} {
+    (<NEWVAR> Tipo() <ID> <PONTOVIRGULA> Vardecl())?
+}
+
+// TIPO -> "int" | "bool"
+void Tipo() : {} {
+    <INT> | <BOOL>
+}
+
+// SEQCOMANDOS -> SEQCOMANDOS COMANDO | vazio
+// SEQCOMANDOS -> COMANDO SEQCOMANDOS | vazio
+void Seqcomandos() : {} {
+    (Comando() Seqcomandos())?
+}
+
+// COMANDO -> TOKEN_id "=" EXP ";" 
+// | TOKEN_id "(" LISTAEXP? ")" ";"
+// | "if" "(" EXP ")" "then" "{" SEQCOMANDOS "}" ";"
+// | "while" "(" EXP ")" "{" SEQCOMANDOS "}" ";"
+// | "repeat" "{" SEQCOMANDOS "}" "until" "(" EXP ")" ";"
+// | "return" EXP ";"
+// | "System.output" "(" EXP ")" ";"
+void Comando() : {} {
+    <ID> ComandoLinha()
+    | <IF> <APARENTESES> Exp() <FPARENTESES> <THEN> <ACHAVES> Seqcomandos() <FCHAVES> <PONTOVIRGULA>
+    | <WHILE> <APARENTESES> Exp() <FPARENTESES> <ACHAVES> Seqcomandos() <FCHAVES> <PONTOVIRGULA>
+    | <REPEAT> <ACHAVES> Seqcomandos() <FCHAVES> <UNTIL> <APARENTESES> Exp() <FPARENTESES> <PONTOVIRGULA>
+    | <RETURN> Exp() <PONTOVIRGULA>
+    | <SYSTEMOUT> <APARENTESES> Exp() <FPARENTESES> <PONTOVIRGULA>
+}
+void ComandoLinha() : {} {
+    <ATRIB> Exp() <PONTOVIRGULA> | <APARENTESES> (Listaexp())? <FPARENTESES> <PONTOVIRGULA>
+}
+
+// EXP -> "(" EXP OP EXP ")" | FATOR
+void Exp() : {} {
+    <APARENTESES> Exp() Op() Exp() <FPARENTESES> | Fator()
+}
+
+// OP -> "+" | "-" | "*" | "/" | "&" | "|" | "<" | ">" | "=="
+void Op() : {} {
+    <PLUS> | <MINUS> | <MULT> | <DIV> | <AND> | <OR> | <LESS> | <HIGHER> | <EQUAL>
+}
+
+// FATOR -> TOKEN_id | TOKEN_id "(" LISTAEXP? ")"
+// | TOKEN_numliteral | "true" | "false"
+void Fator() : {} {
+    <ID> (<ID> <APARENTESES> (Listaexp())? <FPARENTESES>)?
+    | <NUM> | <TRUE> | <FALSE>
+}
+
+// LISTAEXP -> LISTAEXP "," EXP | EXP
+// LISTAEXP -> EXP LISTAEXP'
+// LISTAEXP' -> "," EXP LISTAEXP' | vazio
+void Listaexp() : {} {
+    Exp() ListaexpLinha()
+}
+void ListaexpLinha() : {} {
+    (<VIRGULA> Exp() ListaexpLinha())?
+}
+
+// FUNC -> "func" TIPO TOKEN_id "(" LISTAARG? ")" "{" VARDECL SEQCOMANDOS "}" FUNC'
+// FUNC' -> "func" TIPO TOKEN_id "(" LISTAARG? ")" "{" VARDECL SEQCOMANDOS "}" FUNC' | vazio
+void Func() : {} {
+    <FUNC> Tipo() <ID> <APARENTESES> (Listaarg())? <FPARENTESES> <ACHAVES> Vardecl() Seqcomandos() <FCHAVES> FuncLinha()
+}
+
+void FuncLinha() : {} {
+    (<FUNC> Tipo() <ID> <APARENTESES> (Listaarg())? <FPARENTESES> <ACHAVES> Vardecl() Seqcomandos() <FCHAVES> FuncLinha())?
+}
+
+// LISTAARG -> LISTAARG "," TIPO TOKEN_id | TIPO TOKEN_id
+// LISTAARG -> TIPO TOKEN_id LISTAARG'
+// LISTAARG' -> "," TIPO TOKEN_id LISTAARG' | vazio
+void Listaarg() : {} {
+    Tipo() <ID> ListaargLinha()
+}
+void ListaargLinha() : {} {
+    (<VIRGULA> Tipo() <ID> ListaargLinha())?
+}
