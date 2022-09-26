@@ -1,3 +1,7 @@
+// javacc Karloff.jj
+// javac *.java
+// java Karloff ex1.kar
+
 PARSER_BEGIN(Karloff)
 import java.io.*;
 public class Karloff {
