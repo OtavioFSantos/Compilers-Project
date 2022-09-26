@@ -1,0 +1,13 @@
+void main{
+    newVar int n_1; newVar int n_2; newVar int n_3;
+    newVar int i4o5; newVar int count101;
+
+    n_1 = 0; n_2 = 1; count101 = 10; i4o5 = 2;
+    while((i4o5 < count101)) {
+        n_3 = (n_1 + n_2);
+        System.output(n_3);
+        n_1 = n_2;    
+        n_2 = n_3;
+        i4o5 = (i4o5 + 1);
+    };
+}  
