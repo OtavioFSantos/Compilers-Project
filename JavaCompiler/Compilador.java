@@ -1,3 +1,7 @@
+// PARA RODAR:
+// java Compilador teste -> exibe o resultado tanto do compilador quanto do interpretador
+// java MaquinaPilha arquivoEntrada -> recebe a saida do compilador e retorna o resultado da exp
+
 class Compilador{
 
 	public static void main(String[]args)
