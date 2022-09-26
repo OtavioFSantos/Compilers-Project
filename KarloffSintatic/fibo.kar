@@ -4,7 +4,7 @@ void main{
 
     n1 = 0; n2 = 1; count = 10; i = 2;
 
-    System.output(n2); 
+    System.output(n2);
     
     while((i < count)) {
         n3 = (n1 + n2);
