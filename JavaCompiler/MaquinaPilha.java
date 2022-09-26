@@ -26,6 +26,8 @@ class MaquinaPilha{
                     op1 = pilha.pop();
                     op2 = pilha.pop();
                     op = op2 + op1;
+                    System.out.println("sum op1: " + op1);
+                    System.out.println("sum op2: " + op2); 
                     pilha.push(op);
                 }
                 if(linha.contains("SUB")){
@@ -38,6 +40,8 @@ class MaquinaPilha{
                     op1 = pilha.pop();
                     op2 = pilha.pop();
                     op = op2 * op1;
+                    System.out.println("mult op1: " + op1);
+                    System.out.println("mult op2: " + op2);  
                     pilha.push(op);
                 }
                 if(linha.contains("DIV")){
